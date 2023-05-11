@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/home_24"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/search_24"
+            android:title="Search"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/nav_notifications"
+            android:icon="@drawable/notifications_24"
+            android:title="Notifications"
+            app:showAsAction="ifRoom" />
+
+
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/account_box_24"
+            android:title="Account" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/settings_24"
+            android:title="Settings" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item android:title="Communications" >
+
+            <menu>
+
+                <group>
+
+                    <item
+                        android:id="@+id/nav_share"
+                        android:title="Share"
+                        android:icon="@drawable/share_24" />
+
+                    <item
+                        android:id="@+id/nav_logout"
+                        android:title="Logout"
+                        android:icon="@drawable/login_24" />
+                </group>
+
+            </menu>
+        </item>
+    </group>
+</menu>

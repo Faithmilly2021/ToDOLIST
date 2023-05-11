@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "278538402772",
+    "project_id": "todolist-78183",
+    "storage_bucket": "todolist-78183.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278538402772:android:5e8fbbd9b84e4fc6487441",
+        "android_client_info": {
+          "package_name": "com.faith.todolist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278538402772-5un4kdqt11v0cv4l8u1ruc8rmpb17na4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcbCKAe053QvqOcPQX-UalOEla4vW1Qr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278538402772-5un4kdqt11v0cv4l8u1ruc8rmpb17na4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
