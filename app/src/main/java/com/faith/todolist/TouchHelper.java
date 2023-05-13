@@ -17,7 +17,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 
 public class TouchHelper extends ItemTouchHelper.SimpleCallback {
-    private ToDoAdapter adapter;
+    private final ToDoAdapter adapter;
 
     public TouchHelper(ToDoAdapter adapter) {
         super(0 , ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);

@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.faith.todolist.Adapter.ToDoAdapter;
 import com.faith.todolist.Model.ToDoModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -40,7 +41,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnDialogCloseListener{
+import static com.faith.todolist.AddNewTask.TAG;
+
+public class MainActivity extends AppCompatActivity implements OnDialogCloseListener {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        replaceFragment(new HomeFragment());
+
 
         actionBar = getSupportActionBar();
         try {
@@ -100,25 +103,31 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
                 drawerLayout.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_home:
-                     replaceFragment(new HomeFragment()); break;
+                        replaceFragment(new HomeFragment());
+                        break;
 
                     case R.id.nav_search:
-                        Toast.makeText(MainActivity.this, "Search item is clicked",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Search item is clicked", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case R.id.nav_notifications:
+                        Toast.makeText(MainActivity.this, "Notifications item is clicked", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.nav_account:
-                        replaceFragment(new AccountFragment()); break;
-
+                        replaceFragment(new AccountFragment());
+                        break;
 
                     case R.id.nav_settings:
-                        replaceFragment(new SettingsFragment()); break;
+                        replaceFragment(new SettingsFragment());
+                        break;
 
                     case R.id.nav_share:
-                        Toast.makeText(MainActivity.this, "Share item is clicked",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Share item is clicked", Toast.LENGTH_SHORT).show();
                         break;
 
                     case R.id.nav_logout:
-                        Toast.makeText(MainActivity.this, "Logout item is clicked",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Logout item is clicked", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 return true;
@@ -127,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
             private void replaceFragment(Fragment fragment) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_layout,fragment);
+                fragmentTransaction.replace(R.id.fragment_layout, fragment);
                 fragmentTransaction.commit();
             }
 
@@ -140,12 +149,12 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG );
+                AddNewTask.newInstance().show(getSupportFragmentManager(), TAG);
             }
         });
 
         mList = new ArrayList<>();
-        adapter = new ToDoAdapter(MainActivity.this , mList);
+        adapter = new ToDoAdapter(MainActivity.this, mList);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelper(adapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
@@ -164,32 +173,52 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
 
     private void showData() {
 
-            firestore = FirebaseFirestore.getInstance();
-            query = firestore.collection("task").orderBy("time" , Query.Direction.DESCENDING);
-
+        firestore = FirebaseFirestore.getInstance();
+        query = firestore.collection("task").orderBy("time", Query.Direction.DESCENDING);
 
         listenerRegistration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-              for (DocumentChange documentChange : value.getDocumentChanges())  {
-                  if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                      String id = documentChange.getDocument().getId();
-                      ToDoModel toDoModel = documentChange.getDocument().toObject(ToDoModel.class).withId(id);
+                if (error != null) {
+                    Log.e(TAG, "Error getting documents: ", error);
+                    return;
+                }
+                for (DocumentChange documentChange : value.getDocumentChanges()) {
+                    if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                        String id = documentChange.getDocument().getId();
+                        ToDoModel toDoModel = documentChange.getDocument().toObject(ToDoModel.class).withId(id);
 
-                      mList.add(toDoModel);
-                      adapter.notifyDataSetChanged();
-                  }
-              }
-             listenerRegistration.remove();
+                        mList.add(toDoModel);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
             }
+
+
+            // Call this method when you want to remove the listener
+            public void removeListener() {
+                if (listenerRegistration != null) {
+                    listenerRegistration.remove();
+                }
+            }
+
+
+            //@Override
+            public void onDialogClose(DialogInterface dialogInterface) {
+                mList.clear();
+                showData();
+                adapter.notifyDataSetChanged();
+            }
+
         });
 
     }
 
     @Override
     public void onDialogClose(DialogInterface dialogInterface) {
-        mList.clear();
-        showData();
-        adapter.notifyDataSetChanged();
+
     }
 }
+
+
+
