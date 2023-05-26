@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".AddAccountActivity">
+
+    <EditText
+        android:id="@+id/Login_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Email address"
+        android:layout_centerInParent="true"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:inputType="text"
+        android:textSize="20sp"
+        android:background="@drawable/rounded_corner"
+        android:layout_margin="20dp"
+        android:elevation="5dp"
+        />
+
+    <EditText
+        android:id="@+id/Login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:hint="Password"
+        android:layout_centerInParent="true"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:inputType="textPassword"
+        android:textSize="20sp"
+        android:layout_below="@id/Login_email"
+        android:background="@drawable/rounded_corner"
+        android:layout_margin="20dp"
+        android:elevation="5dp"
+        />
+
+    <Button
+        android:id="@+id/Login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Let me in"
+        android:textSize="25dp"
+        android:padding="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/white"
+        android:layout_below="@id/Login_password"
+        android:background="@drawable/btn_round"/>
+
+
+    <TextView
+        android:id="@+id/create_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Account"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_blue"
+       android:layout_marginTop="100dp"
+       android:layout_centerHorizontal="true"
+        android:layout_below="@id/Login_btn"
+        />
+
+
+</RelativeLayout>
