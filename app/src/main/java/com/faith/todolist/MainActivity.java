@@ -1,12 +1,18 @@
 package com.faith.todolist;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     ActionBarDrawerToggle actionBarDrawerToggle;
 
 
+
     private FirebaseFirestore firestore;
     private RecyclerView recyclerView;
     private FloatingActionButton floatingActionButton;
@@ -85,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         }
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
+        FrameLayout fragmentLayout = findViewById(R.id.fragment_layout);
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         FloatingActionButton floatingActionButton = findViewById(R.id.floatingActionButton);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.menu_Open, R.string.close_menu);
@@ -106,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
                         replaceFragment(new HomeFragment());
                         break;
 
-                    case R.id.nav_search:
-                        Toast.makeText(MainActivity.this, "Search item is clicked", Toast.LENGTH_SHORT).show();
-                        break;
+                   // case R.id.nav_search:
+                      //  Toast.makeText(MainActivity.this, "Search item is clicked", Toast.LENGTH_SHORT).show();
+                       // break;
 
                     case R.id.nav_notifications:
                         Toast.makeText(MainActivity.this, "Notifications item is clicked", Toast.LENGTH_SHORT).show();
@@ -118,27 +126,81 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
                         replaceFragment(new AccountFragment());
                         break;
 
+
                     case R.id.nav_settings:
-                        replaceFragment(new SettingsFragment());
+                        recyclerView.setVisibility(View.GONE);
+                        floatingActionButton.setVisibility(View.GONE);
+                        replaceFragment(new MyPreferenceFragment());
                         break;
 
                     case R.id.nav_share:
-                        Toast.makeText(MainActivity.this, "Share item is clicked", Toast.LENGTH_SHORT).show();
+                       
+                        String shareMessage = "Check out this awesome app!";
+
+                        // Create the share intent
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+
+                        // Get the list of activities that can handle the share intent
+                        PackageManager packageManager = getPackageManager();
+                        List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(shareIntent, 0);
+
+                        // Creating a list of intents for Facebook, WhatsApp, and Email
+                        List<Intent> intentList = new ArrayList<>();
+
+                        // Adding Facebook to the intent list
+                        for (ResolveInfo resolveInfo : resolveInfoList) {
+                            String packageName = resolveInfo.activityInfo.packageName;
+                            if (packageName != null && packageName.toLowerCase().contains("facebook")) {
+                                Intent facebookIntent = new Intent(Intent.ACTION_SEND);
+                                facebookIntent.setType("text/plain");
+                                facebookIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                                facebookIntent.setPackage(packageName);
+                                intentList.add(facebookIntent);
+                                break;
+                            }
+                        }
+
+                        // Adding WhatsApp to the intent list
+                        Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+                        whatsappIntent.setType("text/plain");
+                        whatsappIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                        whatsappIntent.setPackage("com.whatsapp");
+                        intentList.add(whatsappIntent);
+
+                        // Adding Email to the intent list
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                        emailIntent.setData(Uri.parse("mailto:"));
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this app");
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                        intentList.add(emailIntent);
+
+                        // Create a chooser dialog with the custom intent list
+                        Intent chooserIntent = Intent.createChooser(intentList.remove(0), "Share via");
+                        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[0]));
+
+                        // Start the chooser dialog
+                        startActivity(chooserIntent);
+
                         break;
 
+
                     case R.id.nav_logout:
-                        Toast.makeText(MainActivity.this, "Logout item is clicked", Toast.LENGTH_SHORT).show();
+                        finishAffinity();
+                        Toast.makeText(MainActivity.this, "Logout is Successfully", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 return true;
             }
-
             private void replaceFragment(Fragment fragment) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_layout, fragment);
                 fragmentTransaction.commit();
+
             }
+
 
         });
 

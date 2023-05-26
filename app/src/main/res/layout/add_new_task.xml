@@ -28,7 +28,7 @@
         android:drawablePadding="8dp"
         android:padding="10dp"
         android:text="Set Due Date"
-        android:textColor="@color/green_blue"
+        android:textColor="@color/white"
         android:textSize="20sp"
         android:layout_marginTop="500dp"/>
 
@@ -37,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
+        android:background="@drawable/rounded_corner"
         android:layout_marginTop="500dp"
         android:layout_marginLeft="300dp"/>
 

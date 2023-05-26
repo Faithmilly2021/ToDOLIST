@@ -8,11 +8,11 @@
             android:icon="@drawable/home_24"
             android:title="Home" />
 
-        <item
-            android:id="@+id/nav_search"
-            android:icon="@drawable/search_24"
-            android:title="Search"
-            app:showAsAction="ifRoom" />
+
+          //  android:id="@+id/nav_search"
+           // android:icon="@drawable/search_24"
+           // android:title="Search"
+            //app:showAsAction="ifRoom" />
 
         <item
             android:id="@+id/nav_notifications"
