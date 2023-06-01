@@ -67,11 +67,17 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
      ToDoModel toDoModel = todoList.get(position);
-     holder.mCheckBox.setText(toDoModel.getTask());
+        try {     holder.mCheckBox.setText(toDoModel.getTask());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
      holder.mDueDateTv.setText("Due On " + toDoModel.getDue());
 
 
-     holder.mCheckBox.setChecked(toBoolean(toDoModel.getStatus()));
+        try {   holder.mCheckBox.setChecked(toBoolean(toDoModel.getStatus()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
      holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
          @Override
@@ -90,6 +96,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     @Override
     public int getItemCount() {
         return todoList.size();
+    }
+
+    public void filterList(List<ToDoModel> filteredList) {
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

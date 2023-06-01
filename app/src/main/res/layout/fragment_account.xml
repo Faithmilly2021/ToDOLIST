@@ -4,15 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/green_blue"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AccountFragment">
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/account_box_24"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"/>
 
 
      <TextView
@@ -24,32 +17,20 @@
          android:drawableLeft="@drawable/ic_add"
          android:drawablePadding="20dp"
          android:textColor="@color/black"
+         android:background="@drawable/rounded_corner"
          android:textSize="25sp"
          android:layout_marginTop="300dp"
-         android:layout_marginLeft="20dp"
+         android:layout_marginLeft="100dp"
           />
 
-
-    <TextView
-        android:id="@+id/manage_account_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Manage Account"
-        android:padding="10dp"
-        android:drawableLeft="@drawable/ic_person"
-        android:drawablePadding="20dp"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:layout_marginTop="390dp"
-        android:layout_marginLeft="20dp"
-        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 
 </FrameLayout>

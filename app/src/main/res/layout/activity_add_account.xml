@@ -44,6 +44,19 @@
         android:elevation="5dp"
         />
 
+
+    <TextView
+        android:id="@+id/login_forget_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forget Password?"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_blue"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Login_password"
+        />
+
     <Button
         android:id="@+id/Login_btn"
         android:layout_width="match_parent"
@@ -52,12 +65,10 @@
         android:textSize="25dp"
         android:padding="10dp"
         android:layout_marginTop="15dp"
-        android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:textColor="@color/white"
-        android:layout_below="@id/Login_password"
+        android:layout_below="@id/login_forget_password"
         android:background="@drawable/btn_round"/>
-
 
     <TextView
         android:id="@+id/create_account"
@@ -65,10 +76,9 @@
         android:layout_height="wrap_content"
         android:text="Create Account"
         android:textSize="22sp"
-        android:textStyle="bold"
         android:textColor="@color/green_blue"
-       android:layout_marginTop="100dp"
-       android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/Login_btn"
         />
 

@@ -3,28 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="single">
 
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/home_24"
-            android:title="Home" />
-
-
-          //  android:id="@+id/nav_search"
-           // android:icon="@drawable/search_24"
-           // android:title="Search"
-            //app:showAsAction="ifRoom" />
-
-        <item
-            android:id="@+id/nav_notifications"
-            android:icon="@drawable/notifications_24"
-            android:title="Notifications"
-            app:showAsAction="ifRoom" />
-
 
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/account_box_24"
             android:title="Account" />
+
 
         <item
             android:id="@+id/nav_settings"

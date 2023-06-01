@@ -12,4 +12,14 @@ public class TaskId {
         this.TaskId = id;
         return  (T) this;
     }
+
+    public String getTaskId() {
+        return TaskId;
+    }
+
+        public String getTitle() {
+            // Add the implementation of getTitle here
+
+            return getTitle();
+    }
 }

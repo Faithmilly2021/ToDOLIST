@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.faith.todolist">
 
@@ -9,7 +8,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDOLIST">
-        <activity android:name=".ManageAccountActivity"></activity>
+
+        <!-- Activities -->
+        <activity android:name=".ForgetPasswordActivity" />
+        <activity android:name=".CreatePasswordActivity" />
+        <activity android:name=".SecurityActivity" />
+        <activity android:name=".RegistrationActivity" />
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".ManageAccountActivity" />
         <activity android:name=".AddAccountActivity" />
         <activity android:name=".MainActivity" />
         <activity
@@ -17,11 +23,9 @@
             android:theme="@style/Theme.ToDOLIST.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

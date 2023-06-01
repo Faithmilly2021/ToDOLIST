@@ -29,7 +29,6 @@ android {
     }
 }
 
-dependencies {
 
     dependencies {
         implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -38,7 +37,10 @@ dependencies {
         implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
         implementation 'com.google.firebase:firebase-analytics-ktx:20.0.2'
         implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
-       // implementation 'com.google.firebase:firebase-database:20.0.2'
+        implementation 'com.google.firebase:firebase-auth:21.0.1'
+        implementation 'com.google.android.gms:play-services-auth:19.2.0'
+        implementation 'com.google.firebase:firebase-messaging:20.+'
+         implementation 'com.google.firebase:firebase-database:20.2.2'
         implementation 'com.google.firebase:firebase-messaging-ktx:23.0.0'
         implementation 'com.google.firebase:firebase-appcheck:17.0.1'
         implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
@@ -53,4 +55,3 @@ dependencies {
         androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     }
 
-}
