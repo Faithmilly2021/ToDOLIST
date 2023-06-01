@@ -10,7 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -36,6 +40,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements OnDialogCloseListener {
     public static final String TAG = "AddNewTask";
 
+
+    private SearchView searchView;
+    private TextView notificationCount;
+    private int notificationCountValue = 0;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBar actionBar;
@@ -66,12 +74,34 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+        ImageView notificationIcon = findViewById(R.id.nav_notifications);
+        notificationIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle notification icon click
+                showNotifications();
+            }
+
+            private void showNotifications() {
+            }
+        });
+
         actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#192A56")));
         }
 
-        drawerLayout = findViewById(R.id.drawer_layout);
+        searchView = findViewById(R.id.nav_search);
+        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
+
+        // Set up the notification count view
+        notificationCount = findViewById(R.id.notification_count);
+        updateNotificationCount();
+
+    drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
         recyclerView = findViewById(R.id.recyclerview);
         floatingActionButton = findViewById(R.id.floatingActionButton);
@@ -142,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
 
             }
         });
+    }
+
+    private void updateNotificationCount() {
     }
 
     private void shareApp() {

@@ -1,10 +1,18 @@
 package com.faith.todolist;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +28,7 @@ import android.widget.Toast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.faith.todolist.Model.Group;
@@ -38,16 +47,17 @@ import java.util.List;
 public class AddNewTask extends DialogFragment {
 
     public static final String TAG = "AddNewTask";
+    private static final String NOTIFICATION_CHANNEL_ID = "reminder_channel";
+    private static final int NOTIFICATION_ID = 123;
 
     public interface OnDialogCloseListener {
         void onDialogClose(DialogInterface dialogInterface);
     }
 
     private Spinner groupSpinner;
-    private EditText titleEditText;
     private EditText descriptionEditText;
-    private TextView setDueDateTextView;
-    private TextView setTimeTextView;
+    private TextView dueDateTextView;
+    private TextView dueTimeTextView;
     private Button saveButton;
 
     private FirebaseFirestore firestore;
@@ -72,8 +82,8 @@ public class AddNewTask extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         groupSpinner = view.findViewById(R.id.groupSpinner);
-        setDueDateTextView = view.findViewById(R.id.set_due_tv);
-        setTimeTextView = view.findViewById(R.id.set_time_tv);
+        dueDateTextView = view.findViewById(R.id.set_due_tv);
+        dueTimeTextView = view.findViewById(R.id.set_time_tv);
         descriptionEditText = view.findViewById(R.id.description_edittext);
         saveButton = view.findViewById(R.id.save_btn);
 
@@ -86,13 +96,16 @@ public class AddNewTask extends DialogFragment {
             public void onClick(View v) {
                 Group selectedGroup = (Group) groupSpinner.getSelectedItem();
                 String description = descriptionEditText.getText().toString();
-                String dueDate = setDueDateTextView.getText().toString();
-                String dueTime = setTimeTextView.getText().toString();
+                String dueDate = dueDateTextView.getText().toString();
+                String dueTime = dueTimeTextView.getText().toString();
 
                 Task newTask = new Task(null, description, dueDate, dueTime);
 
                 // Save the task
                 saveTask(selectedGroup, newTask);
+
+                // Schedule the reminder
+                scheduleReminder(newTask);
 
                 dismiss();
             }
@@ -104,14 +117,14 @@ public class AddNewTask extends DialogFragment {
 
         calendar = Calendar.getInstance();
 
-        setDueDateTextView.setOnClickListener(new View.OnClickListener() {
+        dueDateTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
             }
         });
 
-        setTimeTextView.setOnClickListener(new View.OnClickListener() {
+        dueTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimePickerDialog();
@@ -131,7 +144,7 @@ public class AddNewTask extends DialogFragment {
 
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                         String selectedDate = dateFormat.format(calendar.getTime());
-                        setDueDateTextView.setText(selectedDate);
+                        dueDateTextView.setText(selectedDate);
                     }
                 },
                 calendar.get(Calendar.YEAR),
@@ -152,7 +165,7 @@ public class AddNewTask extends DialogFragment {
 
                         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
                         String selectedTime = timeFormat.format(calendar.getTime());
-                        setTimeTextView.setText(selectedTime);
+                        dueTimeTextView.setText(selectedTime);
                     }
                 },
                 calendar.get(Calendar.HOUR_OF_DAY),
@@ -194,6 +207,55 @@ public class AddNewTask extends DialogFragment {
         groups.add(new Group("Miscellaneous", "groupId4"));
         groups.add(new Group("Private", "groupId5"));
         return groups;
+    }
+
+    private void scheduleReminder(Task task) {
+        Intent intent = new Intent(context, ReminderBroadcastReceiver.class);
+        intent.putExtra("task_description", task.getDescription());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            long reminderTime = calendar.getTimeInMillis();
+            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent);
+        }
+    }
+
+    public static class ReminderBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String taskDescription = intent.getStringExtra("task_description");
+            showNotification(context, taskDescription);
+        }
+
+        private void showNotification(Context context, String taskDescription) {
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharSequence name = "Reminder Channel";
+                String description = "Channel for task reminders";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+                NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
+                channel.setDescription(description);
+
+                if (notificationManager != null) {
+                    notificationManager.createNotificationChannel(channel);
+                }
+            }
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.notifications_24)
+                    .setContentTitle("Task Reminder")
+                    .setContentText(taskDescription)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true);
+
+            if (notificationManager != null) {
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+            }
+        }
     }
 
     @Override
