@@ -5,16 +5,11 @@
     android:layout_height="match_parent"
     android:background="@color/green_blue"
     tools:context=".HomeFragment">
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Home"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
+     <TextView
+         android:id="@+id/policy"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:text="Privacy Policy"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
