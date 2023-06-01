@@ -2,6 +2,8 @@
     <string name="app_name">ToDOLIST</string>
     <string name="menu_Open">menu_open</string>
     <string name="close_menu">close_menu</string>
+    <string name="channel_name">Your Channel Name</string>
+    <string name="channel_description">Your Channel Description</string>
     <string name="notification_icon_description">Description of the notification icon</string>
 
     <!-- TODO: Remove or change this placeholder text -->
