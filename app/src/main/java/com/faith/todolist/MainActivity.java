@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_menu, menu);
 
-        // Configure the search menu item
+
         MenuItem searchMenuItem = menu.findItem(R.id.nav_search);
         searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(this);
@@ -80,12 +80,11 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set up the notification icon click listener
+
         ImageView notificationIcon = findViewById(R.id.notification_icon);
         notificationIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle notification icon click
                 showNotifications();
             }
         });
@@ -95,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#192A56")));
         }
 
-        // Set up the notification count view
         notificationCount = findViewById(R.id.notification_count);
         updateNotificationCount();
 
@@ -162,15 +160,12 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Open the AddNewTask dialog
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
         });
     }
 
     private void showNotifications() {
-        // Handle the notification icon click
-        // You can replace the code below with your implementation
         Toast.makeText(MainActivity.this, "Show notifications", Toast.LENGTH_SHORT).show();
     }
 
@@ -195,27 +190,22 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        // Perform search operation based on the query
         performSearch(query);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        // Perform search operation based on the new text
         performSearch(newText);
         return true;
     }
 
     private void performSearch(String query) {
-        // Handle the search operation
-        // Update the UI or perform any other actions based on the search query
-        // You can replace the code below with your implementation
         Toast.makeText(MainActivity.this, "Search query: " + query, Toast.LENGTH_SHORT).show();
     }
 
     private void updateNotificationCount() {
-        // Update the notification count view
+
         if (notificationCountValue > 0) {
             notificationCount.setVisibility(View.VISIBLE);
             notificationCount.setText(String.valueOf(notificationCountValue));
@@ -224,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         }
     }
 
-    // Example method to increment the notification count
+
     private void incrementNotificationCount() {
         notificationCountValue++;
         updateNotificationCount();
