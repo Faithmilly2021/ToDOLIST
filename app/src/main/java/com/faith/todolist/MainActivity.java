@@ -14,10 +14,8 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,12 +32,14 @@ import com.faith.todolist.Model.Group;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnDialogCloseListener {
+public class MainActivity extends AppCompatActivity implements OnDialogCloseListener, SearchView.OnQueryTextListener {
     public static final String TAG = "AddNewTask";
-
 
     private SearchView searchView;
     private TextView notificationCount;
@@ -57,7 +57,13 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+
+        // Configure the search menu item
+        MenuItem searchMenuItem = menu.findItem(R.id.nav_search);
+        searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+
+        return true;
     }
 
     @Override
@@ -74,18 +80,13 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
-        ImageView notificationIcon = findViewById(R.id.nav_notifications);
+        // Set up the notification icon click listener
+        ImageView notificationIcon = findViewById(R.id.notification_icon);
         notificationIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle notification icon click
                 showNotifications();
-            }
-
-            private void showNotifications() {
             }
         });
 
@@ -94,14 +95,11 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
             actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#192A56")));
         }
 
-        searchView = findViewById(R.id.nav_search);
-        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
-
         // Set up the notification count view
         notificationCount = findViewById(R.id.notification_count);
         updateNotificationCount();
 
-    drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
         recyclerView = findViewById(R.id.recyclerview);
         floatingActionButton = findViewById(R.id.floatingActionButton);
@@ -121,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
-
                     case R.id.nav_account:
                         replaceFragment(new AccountFragment());
                         break;
@@ -151,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(groupAdapter);
 
         List<Group> groupsList = new ArrayList<>();
         groupsList.add(new Group("Personal", "groupId1"));
@@ -166,15 +162,16 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //AddNewGroup.newInstance().show(getSupportFragmentManager(), AddNewGroup.TAG);
                 // Open the AddNewTask dialog
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
-
             }
         });
     }
 
-    private void updateNotificationCount() {
+    private void showNotifications() {
+        // Handle the notification icon click
+        // You can replace the code below with your implementation
+        Toast.makeText(MainActivity.this, "Show notifications", Toast.LENGTH_SHORT).show();
     }
 
     private void shareApp() {
@@ -194,5 +191,42 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     @Override
     public void onDialogClose(DialogInterface dialogInterface) {
         groupAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        // Perform search operation based on the query
+        performSearch(query);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        // Perform search operation based on the new text
+        performSearch(newText);
+        return true;
+    }
+
+    private void performSearch(String query) {
+        // Handle the search operation
+        // Update the UI or perform any other actions based on the search query
+        // You can replace the code below with your implementation
+        Toast.makeText(MainActivity.this, "Search query: " + query, Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateNotificationCount() {
+        // Update the notification count view
+        if (notificationCountValue > 0) {
+            notificationCount.setVisibility(View.VISIBLE);
+            notificationCount.setText(String.valueOf(notificationCountValue));
+        } else {
+            notificationCount.setVisibility(View.GONE);
+        }
+    }
+
+    // Example method to increment the notification count
+    private void incrementNotificationCount() {
+        notificationCountValue++;
+        updateNotificationCount();
     }
 }
