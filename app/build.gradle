@@ -34,6 +34,7 @@ android {
         implementation 'androidx.appcompat:appcompat:1.4.1'
         implementation 'com.google.android.material:material:1.6.0'
         implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+        implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
         implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
         implementation 'com.google.firebase:firebase-analytics-ktx:20.0.2'
         implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'

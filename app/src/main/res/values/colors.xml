@@ -10,4 +10,11 @@
     <color name="green_blue">#0D98BA</color>
     <color name="dark_blue">#192A56</color>
     <color name="notification_color">#FF0000</color>
+    <color name="groupColor1">#FF0000</color>
+    <color name="groupColor2">#00FF00</color>
+    <color name="groupColor3">#0000FF</color>
+    <color name="groupColor4">#FFFF00</color>
+    <color name="groupColor5">#FF00FF</color>
+
+
 </resources>

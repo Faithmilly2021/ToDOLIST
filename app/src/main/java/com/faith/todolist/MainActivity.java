@@ -4,112 +4,105 @@ import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
+
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-//import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import com.faith.todolist.Adapter.GroupAdapter;
+import com.faith.todolist.AddTaskActivity;
 import com.faith.todolist.Model.Group;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnDialogCloseListener, NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
-    private static final String CHANNEL_ID = "reminder_channel";
+public class MainActivity extends AppCompatActivity implements GroupAdapter.OnItemClickListener, DialogInterface.OnDismissListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener {
+    private static final String CHANNEL_ID = "ToDoListChannel";
     private static final int NOTIFICATION_ID = 1;
 
-    private SearchView searchView;
+    private List<Group> groupsList;
+    private GroupAdapter groupAdapter;
     private TextView notificationCount;
-    private int notificationCountValue = 0;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private ActionBar actionBar;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private RecyclerView recyclerView;
-    private FloatingActionButton floatingActionButton;
-    private GroupAdapter groupAdapter;
-    private AddNewTask addNewGroup;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#192A56")));
-        }
+        // Set up ActionBar
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#192A56")));
 
+        // Find views
         notificationCount = findViewById(R.id.notification_count);
-        updateNotificationCount();
-
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
         recyclerView = findViewById(R.id.recyclerview);
-        floatingActionButton = findViewById(R.id.floatingActionButton);
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.menu_Open, R.string.close_menu);
+        // Set up ActionBarDrawerToggle
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.menu_Open, R.string.close_menu);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        // Set up NavigationView
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Set up RecyclerView
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Group> groupsList = new ArrayList<>();
-        groupsList.add(new Group("Personal", "groupId1"));
-        groupsList.add(new Group("Work", "groupId2"));
-        groupsList.add(new Group("Goals", "groupId3"));
-        groupsList.add(new Group("Miscellaneous", "groupId4"));
-        groupsList.add(new Group("Private", "groupId5"));
-
-        groupAdapter = new GroupAdapter(groupsList, this);
+        // Create and set up the adapter with sample data
+        groupsList = new ArrayList<>();
+        groupsList.add(new Group("Click on a group to add tasks", "", Arrays.asList("Task1", "Task2"), Arrays.asList(R.color.groupColor1)));
+        groupsList.add(new Group("Personal", "groupId1", Arrays.asList("Task1", "Task2"), Arrays.asList(R.color.groupColor1)));
+        groupsList.add(new Group("Work", "groupId2", Arrays.asList("Task3", "Task4"), Arrays.asList(R.color.groupColor2)));
+        groupsList.add(new Group("Goals", "groupId3", Arrays.asList("Task5", "Task6"), Arrays.asList(R.color.groupColor3)));
+        groupsList.add(new Group("Miscellaneous", "groupId4", Arrays.asList("Task7", "Task8"), Arrays.asList(R.color.groupColor4)));
+        groupsList.add(new Group("Private", "groupId5", Arrays.asList("Task9", "Task10"), Arrays.asList(R.color.groupColor5)));
+        groupAdapter = new GroupAdapter(groupsList, this, this); // Pass "this" as the listener
         recyclerView.setAdapter(groupAdapter);
-
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
-            }
-        });
 
         createNotificationChannel();
         showReminderNotification();
@@ -128,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             drawerLayout.openDrawer(GravityCompat.START);
             return true;
         } else if (item.getItemId() == R.id.nav_notifications) {
@@ -193,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     }
 
     @Override
-    public void onDialogClose(DialogInterface dialogInterface) {
+    public void onDismiss(DialogInterface dialogInterface) {
         groupAdapter.notifyDataSetChanged();
     }
 
@@ -222,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
                 break;
             case R.id.nav_settings:
                 recyclerView.setVisibility(View.GONE);
-                floatingActionButton.setVisibility(View.GONE);
                 replaceFragment(new MyPreferenceFragment());
                 break;
             case R.id.nav_share:
@@ -244,25 +236,31 @@ public class MainActivity extends AppCompatActivity implements OnDialogCloseList
     }
 
     private void shareApp() {
-        try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My App");
-            String shareMessage = "\nLet me recommend you this cool app\n\n";
-            shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n";
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(shareIntent, "Choose one"));
-        } catch (Exception e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        String shareBody = "Download the ToDoList app and manage your tasks efficiently!";
+        String shareSubject = "ToDoList App";
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareSubject);
+        startActivity(Intent.createChooser(shareIntent, "Share using"));
     }
 
     private void updateNotificationCount() {
+        int notificationCountValue = 0;
+
         if (notificationCountValue > 0) {
             notificationCount.setVisibility(View.VISIBLE);
             notificationCount.setText(String.valueOf(notificationCountValue));
         } else {
             notificationCount.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Group group = groupsList.get(position);
+        Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
+        intent.putExtra("groupName", group.getName());
+        startActivity(intent);
     }
 }

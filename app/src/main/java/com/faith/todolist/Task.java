@@ -18,6 +18,12 @@ public class Task {
         this.email = email;
     }
 
+    public Task(String description) {
+    }
+
+    public Task(Object o, String description, String dueDate, String dueTime, String name, int i) {
+    }
+
     public String getId() {
         return id;
     }
@@ -35,6 +41,16 @@ public class Task {
 
     public  String getGroupName(){
         return groupName;
+    }
+
+    public String getDescription() {
+        return null;
+    }
+
+    public void setTime(String format) {
+    }
+
+    public void setDate(String format) {
     }
 }
 

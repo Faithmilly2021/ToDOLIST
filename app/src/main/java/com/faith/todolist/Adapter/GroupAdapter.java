@@ -1,19 +1,17 @@
 package com.faith.todolist.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.faith.todolist.Adapter.TaskAdapter;
+import com.faith.todolist.AddTaskActivity;
 import com.faith.todolist.Model.Group;
-import com.faith.todolist.Model.Task;
 import com.faith.todolist.R;
 
 import java.util.List;
@@ -22,10 +20,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     private List<Group> groupList;
     private Context context;
+    private OnItemClickListener itemClickListener;
 
-    public GroupAdapter(List<Group> groupList, Context context) {
+    public GroupAdapter(List<Group> groupList, Context context, OnItemClickListener itemClickListener) {
         this.groupList = groupList;
         this.context = context;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -40,9 +40,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         Group group = groupList.get(position);
         holder.groupNameTextView.setText(group.getName());
 
-        List<Task> tasks = group.getTasks();
-        TaskAdapter taskAdapter = new TaskAdapter(tasks);
-        holder.recyclerView.setAdapter(taskAdapter);
+        // Set click listener on itemView
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener != null) {
+                    itemClickListener.onItemClick(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -50,16 +56,17 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         return groupList.size();
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
     public class GroupViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView groupNameTextView;
-        private RecyclerView recyclerView;
+        TextView groupNameTextView;
 
         public GroupViewHolder(@NonNull View itemView) {
             super(itemView);
             groupNameTextView = itemView.findViewById(R.id.groupNameTextView);
-            recyclerView = itemView.findViewById(R.id.tasksRecyclerView);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
     }
 }

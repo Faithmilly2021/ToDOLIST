@@ -7,13 +7,13 @@
     <string name="notification_icon_description">Description of the notification icon</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-        <string-array name="group_names">
-            <item>Group 1</item>
-            <item>Group 2</item>
-            <item>Group 3</item>
-           <item>Group 4</item>
-            <item>Group 5</item>
-        </string-array>
+    <string-array name="group_names">
+        <item>Group 1</item>
+        <item>Group 2</item>
+        <item>Group 3</item>
+        <item>Group 4</item>
+        <item>Group 5</item>
+    </string-array>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

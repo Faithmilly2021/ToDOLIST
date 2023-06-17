@@ -3,7 +3,6 @@ package com.faith.todolist;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,8 +11,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
 import android.os.Build;
 import android.os.Bundle;
+
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +28,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.faith.todolist.Model.Group;
-import com.faith.todolist.Model.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,7 +101,7 @@ public class AddNewTask extends DialogFragment {
                 String dueDate = dueDateTextView.getText().toString();
                 String dueTime = dueTimeTextView.getText().toString();
 
-                Task newTask = new Task(null, description, dueDate, dueTime);
+                Task newTask = new Task(null, description, dueDate, dueTime, selectedGroup.getName(), 0);
 
                 // Save the task
                 saveTask(selectedGroup, newTask);
@@ -201,17 +203,57 @@ public class AddNewTask extends DialogFragment {
 
     private List<Group> getGroups() {
         List<Group> groups = new ArrayList<>();
-        groups.add(new Group("Personal", "groupId1"));
-        groups.add(new Group("Work", "groupId2"));
-        groups.add(new Group("Goals", "groupId3"));
-        groups.add(new Group("Miscellaneous", "groupId4"));
-        groups.add(new Group("Private", "groupId5"));
+
+        // Group 1
+        List<String> tasks1 = new ArrayList<>();
+        tasks1.add("Task1");
+        tasks1.add("Task2");
+        List<Integer> colors1 = new ArrayList<>();
+        colors1.add(R.color.groupColor1);
+        groups.add(new Group("Personal", "groupId1", tasks1, colors1));
+
+        // Group 2
+        List<String> tasks2 = new ArrayList<>();
+        tasks2.add("Task3");
+        tasks2.add("Task4");
+        List<Integer> colors2 = new ArrayList<>();
+        colors2.add(R.color.groupColor2);
+        groups.add(new Group("Work", "groupId2", tasks2, colors2));
+
+        // Group 3
+        List<String> tasks3 = new ArrayList<>();
+        tasks3.add("Task5");
+        tasks3.add("Task6");
+        List<Integer> colors3 = new ArrayList<>();
+        colors3.add(R.color.groupColor3);
+        groups.add(new Group("Goals", "groupId3", tasks3, colors3));
+
+        // Group 4
+        List<String> tasks4 = new ArrayList<>();
+        tasks4.add("Task7");
+        tasks4.add("Task8");
+        List<Integer> colors4 = new ArrayList<>();
+        colors4.add(R.color.groupColor4);
+        groups.add(new Group("Miscellaneous", "groupId4", tasks4, colors4));
+
+        // Group 5
+        List<String> tasks5 = new ArrayList<>();
+        tasks5.add("Task9");
+        tasks5.add("Task10");
+        List<Integer> colors5 = new ArrayList<>();
+        colors5.add(R.color.groupColor5);
+        groups.add(new Group("Private", "groupId5", tasks5, colors5));
+
         return groups;
     }
 
     private void scheduleReminder(Task task) {
         Intent intent = new Intent(context, ReminderBroadcastReceiver.class);
-        intent.putExtra("task_description", task.getDescription());
+        //intent.putExtra("task_description", task.getDescription());
+        // Assuming you have a valid 'intent' object
+        String taskDescription = task.getDescription();
+        intent.putExtra("task_description", taskDescription);
+
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
